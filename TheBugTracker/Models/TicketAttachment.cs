@@ -23,15 +23,15 @@ namespace TheBugTracker.Models
 
         [NotMapped]
         [DataType(DataType.Upload)]
-        public IFormFile? FormFile { get; set; }
+        public IFormFile FormFile { get; set; }
 
         [DisplayName("File Name")]
-        public string? FileName { get; set; }
-        public byte[]? FileData { get; set; }
+        public string FileName { get; set; }
+        public byte[] FileData { get; set; }
 
 
         [DisplayName("File Extension")]
-        public string? FileContentType { get; set; }
+        public string FileContentType { get; set; }
 
         // Navigation properties
         public virtual Ticket Ticket { get; set; }
