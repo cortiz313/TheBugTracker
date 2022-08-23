@@ -34,7 +34,7 @@ namespace TheBugTracker.Models
         public string? FileContentType { get; set; }
 
         // Navigation properties
-        public virtual Ticket Ticket { get; set; }
+        public virtual Ticket? Ticket { get; set; }
         public virtual BTUser? User { get; set; }
     }
 }
