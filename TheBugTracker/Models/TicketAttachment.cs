@@ -13,13 +13,13 @@ namespace TheBugTracker.Models
         public int TicketId { get; set; }
 
         [DisplayName("File Date")]
-        public DateTimeOffset? Created { get; set; }
+        public DateTimeOffset Created { get; set; }
 
         [DisplayName("Team Member")]
-        public string? UserId { get; set; }
+        public string UserId { get; set; }
 
         [DisplayName("File Description")]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [NotMapped]
         [DataType(DataType.Upload)]
@@ -34,7 +34,7 @@ namespace TheBugTracker.Models
         public string? FileContentType { get; set; }
 
         // Navigation properties
-        public virtual Ticket? Ticket { get; set; }
-        public virtual BTUser? User { get; set; }
+        public virtual Ticket Ticket { get; set; }
+        public virtual BTUser User { get; set; }
     }
 }
