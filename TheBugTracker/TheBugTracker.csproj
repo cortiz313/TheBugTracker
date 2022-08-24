@@ -24,5 +24,11 @@
   <ItemGroup>
     <None Remove="Microsoft.EntityFrameworkCore.Sqlite" />
     <None Remove="Swashbuckle.AspNetCore" />
+    <None Remove="Services\" />
+    <None Remove="Services\Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 </Project>
