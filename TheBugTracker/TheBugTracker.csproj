@@ -27,7 +27,4 @@
     <None Remove="Services\" />
     <None Remove="Services\Interfaces\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\Interfaces\" />
-  </ItemGroup>
 </Project>
