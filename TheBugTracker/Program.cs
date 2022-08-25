@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TheBugTracker.Data;
 using TheBugTracker.Models;
+using TheBugTracker.Services;
+using TheBugTracker.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultUI().AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IBTRolesService, BTRolesService>();
 
 builder.Services.AddControllersWithViews();
 
