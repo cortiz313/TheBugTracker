@@ -28,6 +28,7 @@ namespace TheBugTracker.Models
         [DisplayName("Archived")]
         public bool Archived { get; set; }
 
+        [Required]
         [DisplayName("Project")]
         public int ProjectId { get; set; }
 
