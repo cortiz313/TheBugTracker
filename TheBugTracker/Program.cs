@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using TheBugTracker.Data;
 using TheBugTracker.Models;
@@ -24,6 +25,11 @@ builder.Services.AddScoped<IBTRolesService, BTRolesService>();
 builder.Services.AddScoped<IBTCompanyInfoService, BTCompanyInfoService>();
 builder.Services.AddScoped<IBTProjectService, BTProjectService>();
 builder.Services.AddScoped<IBTTicketService, BTTicketService>();
+builder.Services.AddScoped<IBTTicketHistoryService, BTTicketHistoryService>();
+builder.Services.AddScoped<IEmailSender, BTEmailService>();
+
+// Need to come back after I added mail settings to my app.json. need to update for .net5
+builder.Configuration.GetSection("MailSettings");
 
 builder.Services.AddControllersWithViews();
 
