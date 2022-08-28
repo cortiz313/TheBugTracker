@@ -26,7 +26,7 @@ namespace TheBugTracker.Services
             // If you forget how to implement, look at ticket controller and use the lines in the HttpPost create method to add a new ticket
             try
             {
-                _context.Add(ticket);
+                await _context.AddAsync(ticket);
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
