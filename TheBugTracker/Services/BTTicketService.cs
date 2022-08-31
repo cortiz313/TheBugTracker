@@ -82,7 +82,7 @@ namespace TheBugTracker.Services
 
         public async Task<List<Ticket>> GetAllTicketsByCompanyAsync(int companyId)
         {
-            try
+            try  // to leave out duplicated information
             {
                 List<Ticket> tickets = await _context.Projects // ticket has no companyId field, so we must go through the Projects table first which does
                                                      .Where(p => p.CompanyId == companyId) // go thru all projects with the companyId

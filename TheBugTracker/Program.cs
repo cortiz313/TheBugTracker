@@ -14,7 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-options.UseNpgsql(DataUtility.GetConnectionString(builder.Configuration)));
+options.UseNpgsql(DataUtility.GetConnectionString(builder.Configuration),
+o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery) // split query instead of joins, saves from repeated data, more efficient queries
+)) ;
 
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

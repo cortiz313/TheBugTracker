@@ -11,7 +11,7 @@
     "TheBugTracker": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7284;http://localhost:5284",
+      "applicationUrl": "http://localhost:37407",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
