@@ -45,19 +45,25 @@ namespace TheBugTracker.Data
 
         public static async Task ManageDataAsync(IHost host)
         {
-            using var svcScope = host.Services.CreateScope();
+            // we dissect host to get the scope to get the service provider
+            using var svcScope = host.Services.CreateScope(); 
             var svcProvider = svcScope.ServiceProvider;
-            //Service: An instance of RoleManager
+            //Service: An instance of RoleManager, we inject services below into data utility
+            // we do it differently here because the application is in the process of starting up
+            // we inject them and capture them as variables
             var dbContextSvc = svcProvider.GetRequiredService<ApplicationDbContext>();
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             //Service: An instance of RoleManager
             var roleManagerSvc = svcProvider.GetRequiredService<RoleManager<IdentityRole>>();
             //Service: An instance of the UserManager
             var userManagerSvc = svcProvider.GetRequiredService<UserManager<BTUser>>();
             //Migration: This is the programmatic equivalent to Update-Database
+            // instead of using package manager console we set up data migration here
             await dbContextSvc.Database.MigrateAsync();
 
 
             //Custom  Bug Tracker Seed Methods
+            // These will initialize data into our database
             await SeedRolesAsync(roleManagerSvc);
             await SeedDefaultCompaniesAsync(dbContextSvc);
             await SeedDefaultUsersAsync(userManagerSvc);
@@ -66,14 +72,15 @@ namespace TheBugTracker.Data
             await SeedDefaultTicketStatusAsync(dbContextSvc);
             await SeedDefaultTicketPriorityAsync(dbContextSvc);
             await SeedDefaultProjectPriorityAsync(dbContextSvc);
-            await SeedDefautProjectsAsync(dbContextSvc);
-            await SeedDefautTicketsAsync(dbContextSvc);
+            await SeedDefaultProjectsAsync(dbContextSvc);
+            await SeedDefaultTicketsAsync(dbContextSvc);
         }
 
 
         public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
         {
             //Seed Roles
+            // We use the enum we made to get values for creations
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.ProjectManager.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Developer.ToString()));
@@ -85,6 +92,7 @@ namespace TheBugTracker.Data
         {
             try
             {
+                // Default companies 
                 IList<Company> defaultcompanies = new List<Company>() {
                     new Company() { Name = "Company1", Description="This is default Company 1" },
                     new Company() { Name = "Company2", Description="This is default Company 2" },
@@ -93,6 +101,7 @@ namespace TheBugTracker.Data
                     new Company() { Name = "Company5", Description="This is default Company 5" }
                 };
 
+                // adding the default companies to the database
                 var dbCompanies = context.Companies.Select(c => c.Name).ToList();
                 await context.Companies.AddRangeAsync(defaultcompanies.Where(c => !dbCompanies.Contains(c.Name)));
                 await context.SaveChangesAsync();
@@ -118,6 +127,7 @@ namespace TheBugTracker.Data
         {
             try
             {
+                // create some priorities and then add them to db table
                 IList<Models.ProjectPriority> projectPriorities = new List<ProjectPriority>() {
                                                     new ProjectPriority() { Name = BTProjectPriority.Low.ToString() },
                                                     new ProjectPriority() { Name = BTProjectPriority.Medium.ToString() },
@@ -140,7 +150,7 @@ namespace TheBugTracker.Data
             }
         }
 
-        public static async Task SeedDefautProjectsAsync(ApplicationDbContext context)
+        public static async Task SeedDefaultProjectsAsync(ApplicationDbContext context)
         {
 
             //Get project priority Ids
@@ -151,14 +161,19 @@ namespace TheBugTracker.Data
 
             try
             {
+                // Some default projects
+                // Runs at beginning of every execution of the program
+                // If db doesn't have it, it will add it. 
+                // If I want to change default info, change it here, then clear out db, and run application again
+                // only using 2 companies here
                 IList<Project> projects = new List<Project>() {
                      new Project()
                      {
                          CompanyId = company1Id,
                          Name = "Build a Personal Porfolio",
                          Description="Single page html, css & javascript page.  Serves as a landing page for candidates and contains a bio and links to all applications and challenges." ,
-                         StartDate = new DateTime(2021,8,20),
-                         EndDate = new DateTime(2021,8,20).AddMonths(1),
+                         StartDate = new DateTime(2022,8,20),
+                         EndDate = new DateTime(2022,8,20).AddMonths(1),
                          ProjectPriorityId = priorityLow
                      },
                      new Project()
@@ -166,8 +181,8 @@ namespace TheBugTracker.Data
                          CompanyId = company2Id,
                          Name = "Build a supplemental Blog Web Application",
                          Description="Candidate's custom built web application using .Net Core with MVC, a postgres database and hosted in a heroku container.  The app is designed for the candidate to create, update and maintain a live blog site.",
-                         StartDate = new DateTime(2021,8,20),
-                         EndDate = new DateTime(2021,8,20).AddMonths(4),
+                         StartDate = new DateTime(2022,8,20),
+                         EndDate = new DateTime(2022,8,20).AddMonths(4),
                          ProjectPriorityId = priorityMedium
                      },
                      new Project()
@@ -175,8 +190,8 @@ namespace TheBugTracker.Data
                          CompanyId = company1Id,
                          Name = "Build an Issue Tracking Web Application",
                          Description="A custom designed .Net Core application with postgres database.  The application is a multi tennent application designed to track issue tickets' progress.  Implemented with identity and user roles, Tickets are maintained in projects which are maintained by users in the role of projectmanager.  Each project has a team and team members.",
-                         StartDate = new DateTime(2021,8,20),
-                         EndDate = new DateTime(2021,8,20).AddMonths(6),
+                         StartDate = new DateTime(2022,8,20),
+                         EndDate = new DateTime(2022,8,20).AddMonths(6),
                          ProjectPriorityId = priorityHigh
                      },
                      new Project()
@@ -184,8 +199,8 @@ namespace TheBugTracker.Data
                          CompanyId = company2Id,
                          Name = "Build an Address Book Web Application",
                          Description="A custom designed .Net Core application with postgres database.  This is an application to serve as a rolodex of contacts for a given user..",
-                         StartDate = new DateTime(2021,8,20),
-                         EndDate = new DateTime(2021,8,20).AddMonths(2),
+                         StartDate = new DateTime(2022,8,20),
+                         EndDate = new DateTime(2022,8,20).AddMonths(2),
                          ProjectPriorityId = priorityLow
                      },
                     new Project()
@@ -193,12 +208,13 @@ namespace TheBugTracker.Data
                          CompanyId = company1Id,
                          Name = "Build a Movie Information Web Application",
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
-                         StartDate = new DateTime(2021,8,20),
-                         EndDate = new DateTime(2021,8,20).AddMonths(3),
+                         StartDate = new DateTime(2022,8,20),
+                         EndDate = new DateTime(2022,8,20).AddMonths(3),
                          ProjectPriorityId = priorityHigh
                      }
                 };
 
+                // add to db in projects table
                 var dbProjects = context.Projects.Select(c => c.Name).ToList();
                 await context.Projects.AddRangeAsync(projects.Where(c => !dbProjects.Contains(c.Name)));
                 await context.SaveChangesAsync();
@@ -217,8 +233,8 @@ namespace TheBugTracker.Data
 
         public static async Task SeedDefaultUsersAsync(UserManager<BTUser> userManager)
         {
-            //Seed Default Admin User
-            var defaultUser = new BTUser
+            //Seed Default Admin User, dummy data
+            BTUser defaultUser = new BTUser
             {
                 UserName = "btadmin1@bugtracker.com",
                 Email = "btadmin1@bugtracker.com",
@@ -229,10 +245,11 @@ namespace TheBugTracker.Data
             };
             try
             {
-                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                // see if user is already in the db, do nothing, else add them
+                BTUser user = await userManager.FindByEmailAsync(defaultUser.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser, "Abc&123!");
+                    await userManager.CreateAsync(defaultUser, "Abc&123!"); // user and password
                     await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
                 }
             }
@@ -566,6 +583,9 @@ namespace TheBugTracker.Data
         public static async Task SeedDemoUsersAsync(UserManager<BTUser> userManager)
         {
             //Seed Demo Admin User
+            // There is no validation for user name or email here, so be careful when adjusting this info
+            // Distinct email addresses, and a valid password (1 upper, 1 lower, 1 special char, 1 num, and at least 6 char long)
+            // Generally use the same password for developmental data
             var defaultUser = new BTUser
             {
                 UserName = "demoadmin@bugtracker.com",
@@ -582,7 +602,7 @@ namespace TheBugTracker.Data
                 {
                     await userManager.CreateAsync(defaultUser, "Abc&123!");
                     await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
-                    await userManager.AddToRoleAsync(defaultUser, Roles.DemoUser.ToString());
+                    await userManager.AddToRoleAsync(defaultUser, Roles.DemoUser.ToString()); // demouser restricts them from doing certain things in the application
 
                 }
             }
@@ -728,7 +748,7 @@ namespace TheBugTracker.Data
                      new TicketType() { Name = BTTicketType.Defect.ToString()},               // Ticket involves unexpected development/maintenance on a previously designed feature/functionality
                      new TicketType() { Name = BTTicketType.ChangeRequest.ToString() },       // Ticket involves modification development of a previously designed feature/functionality
                      new TicketType() { Name = BTTicketType.Enhancement.ToString() },         // Ticket involves additional development on a previously designed feature or new functionality
-                     new TicketType() { Name = BTTicketType.GeneralTask.ToString() }          // Ticket involves no software development but may involve tasks such as configuations, or hardware setup
+                     new TicketType() { Name = BTTicketType.GeneralTask.ToString() }          // Ticket involves no software development but may involve tasks such as configurations, or hardware setup
                 };
 
                 var dbTicketTypes = context.TicketTypes.Select(c => c.Name).ToList();
@@ -800,7 +820,7 @@ namespace TheBugTracker.Data
 
 
 
-        public static async Task SeedDefautTicketsAsync(ApplicationDbContext context)
+        public static async Task SeedDefaultTicketsAsync(ApplicationDbContext context)
         {
             //Get project Ids
             int portfolioId = context.Projects.FirstOrDefault(p => p.Name == "Build a Personal Porfolio").Id;
@@ -913,7 +933,7 @@ namespace TheBugTracker.Data
 
                 };
 
-
+                // add to db
                 var dbTickets = context.Tickets.Select(c => c.Title).ToList();
                 await context.Tickets.AddRangeAsync(tickets.Where(c => !dbTickets.Contains(c.Title)));
                 await context.SaveChangesAsync();

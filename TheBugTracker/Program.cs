@@ -18,6 +18,7 @@ options.UseNpgsql(DataUtility.GetConnectionString(builder.Configuration)));
 
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+// commented out
 builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -42,6 +43,7 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+await DataUtility.ManageDataAsync(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
