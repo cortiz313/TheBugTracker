@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using TheBugTracker.Models;
 
 namespace TheBugTracker.Services.Interfaces
@@ -6,6 +7,8 @@ namespace TheBugTracker.Services.Interfaces
     public interface IBTRolesService
     {
         public Task<bool> IsUserInRoleAsync(BTUser user, string roleName);
+
+        public Task<List<IdentityRole>> GetRolesAsync();
 
         public Task<IEnumerable<string>> GetUserRolesAsync(BTUser user);
 

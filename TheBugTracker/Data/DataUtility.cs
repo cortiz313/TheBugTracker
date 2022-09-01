@@ -936,6 +936,7 @@ namespace TheBugTracker.Data
                 // add to db
                 var dbTickets = context.Tickets.Select(c => c.Title).ToList();
                 await context.Tickets.AddRangeAsync(tickets.Where(c => !dbTickets.Contains(c.Title)));
+                
                 await context.SaveChangesAsync();
             }
             catch (Exception ex)
