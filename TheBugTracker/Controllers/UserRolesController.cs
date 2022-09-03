@@ -18,6 +18,7 @@ namespace TheBugTracker.Controllers
             _companyInfoService = companyInfoService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> ManageUserRoles()
         {
             // how to make get action work
