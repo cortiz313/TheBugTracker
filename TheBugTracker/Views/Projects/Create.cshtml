@@ -35,7 +35,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label"> Choose a priority </label> @*instead of letting the model say what goes here, with this code you do it yourself, label asp-for chooses what goes in the label*@
-                <select asp-for="ProjectPriority" class ="form-control" asp-items="@Model.PriorityList"></select> @*@model.priority list chooses drop down options based on that property of the model*@
+                <select asp-for="Project.ProjectPriorityId" class ="form-control" asp-items="@Model.PriorityList"></select> @*@model.priority list chooses drop down options based on that property of the model*@
             </div>
             @*
                 Set up Image capture
@@ -49,9 +49,13 @@
             </div>
 
             <label> Image Preview </label>
-            @if (Model.Project.ImageFileData != null)
+            @if (Model.Project?.ImageFileData != null)
             {
                 <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="data:image/*;base64,@(Convert.ToBase64String(Model.Project.ImageFileData))"> @*Converts byte array to a string to be interpreted as an image src*@
+            }
+            else {
+                <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src=""> @*Can put default image in here, put img in root img folder*@
+
             }
 
             @*
@@ -60,7 +64,10 @@
             *@
             <div class="form-group">
                 <label class="control-label"> Project Manager </label>
-                <select asp-for="PmId" class="form-control" asp-items="@Model.PMList"></select>
+                <select asp-for="PmId" class="form-control" asp-items="@Model.PMList">
+                    <option></option> @*Adds an empty option, so it doesnt default to the options available, in case you dont want to assign right away*@
+
+                </select>
             </div>
             
             <div class="form-group">
